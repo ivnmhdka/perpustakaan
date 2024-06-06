@@ -384,7 +384,36 @@ func pinjamBuku(A *arrBuku, n int, B *arrPeminjaman, o *int) {
 }
 
 func kembaliBuku(A *arrBuku, n int, B *arrPeminjaman, o *int) {
-
+	var ID, tanggalPengembalian string
+	var dendaPeminjaman float64
+	fmt.Println("Masukkan ID Peminjaman: ")
+	fmt.Scan(&ID)
+	var index int = searchPeminjamanBuku(*B, *o, ID)
+	if index == -1 {
+		fmt.Println("ID Peminjaman tidak ditemukan!")
+		fmt.Println("")
+		menuPengguna()
+		return
+	} else {
+		fmt.Print("Masukkan Tanggal Pengembalian: (Format DD-MM-YYYY)")
+		fmt.Scan(&tanggalPengembalian)
+		var jumlahHariPeminjaman int = countHari(B[index].tanggalPinjam, tanggalPengembalian)
+		var jumlahSeharusnya int = countHari(B[index].tanggalPinjam, B[index].tanggalKembali)
+		var selisih int = jumlahHariPeminjaman - jumlahSeharusnya
+		if selisih > 0 {
+			dendaPeminjaman = float64(selisih) * dendaFix
+			totalDenda += dendaPeminjaman
+			fmt.Println("Anda telat mengembalikan selama ", selisih, " hari dan memiliki denda sebesar Rp. ", dendaPeminjaman)
+			fmt.Println("")
+		}
+		var idxBuku int = searchBuku(*A, n, B[index].idBuku)
+		A[idxBuku].statusPinjam = false
+		for i := index; i < *o; i++ {
+			B[i] = B[i+1]
+		}
+		menuPengguna()
+		return
+	}
 }
 
 func totalDendaUser(A arrPengguna, n int) {
@@ -398,6 +427,17 @@ func bukuFavorit(A arrBuku, n int) {
 }
 
 func searchBuku(A arrBuku, n int, x string) int {
+	var idx int = -1
+	var i int = 0
+	for i < n && idx == -1 {
+		if A[i].idBuku == x {
+			idx = i
+		}
+	}
+	return idx
+}
+
+func searchPeminjamanBuku(A arrPeminjaman, n int, x string) int {
 	var idx int = -1
 	var i int = 0
 	for i < n && idx == -1 {
