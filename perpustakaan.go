@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 )
 
 const NMAX int = 100
+const dendaFix float64 = 5000
 
 type Buku struct {
 	idBuku, judul, kategori string
@@ -45,11 +47,11 @@ func main() {
 
 func menu() {
 	fmt.Println("------------------------------------------------")
-	fmt.Println("***           Aplikasi Perpustakaan          ***")
-	fmt.Println("*** Anggota 1 ***") //Isi dengan nama dan NIM anggota
-	fmt.Println("*** Anggota 2 ***") //Isi dengan nama dan NIM anggota
-	fmt.Println("*** Anggota 3 ***") //Isi dengan nama dan NIM anggota
-	fmt.Println("*** Menu ***")
+	fmt.Println("*           Aplikasi Perpustakaan          *")
+	fmt.Println("* Anggota 1 *") //Isi dengan nama dan NIM anggota
+	fmt.Println("* Anggota 2 *") //Isi dengan nama dan NIM anggota
+	fmt.Println("* Anggota 3 *") //Isi dengan nama dan NIM anggota
+	fmt.Println("* Menu *")
 	fmt.Println("1. Registrasi")
 	fmt.Println("2. Login")
 	fmt.Println("3. Admin")
@@ -65,7 +67,7 @@ func menu() {
 	case 1:
 		registrasi(&listPengguna, &jumlahPengguna)
 	case 2:
-		fmt.Println("***   Halaman Login   ***")
+		fmt.Println("*   Halaman Login   *")
 		fmt.Print("Username: ")
 		fmt.Scan(&username)
 		fmt.Print("Password: ")
@@ -76,6 +78,7 @@ func menu() {
 		menuAdmin()
 	case 4:
 		fmt.Println("Terima Kasih telah menggunakan aplikasi kami!")
+		os.Exit(0)
 		return
 	default:
 		fmt.Println("Pilihan Anda tidak valid!")
@@ -128,7 +131,7 @@ func login(user string, pw string, A arrPengguna, n int) {
 }
 
 func menuAdmin() {
-	fmt.Println("***   Menu Admin   ***")
+	fmt.Println("*   Menu Admin   *")
 	fmt.Println("1. Cek Buku Terurut Berdasarkan Keyword")
 	fmt.Println("2. Tambah Buku")
 	fmt.Println("3. Edit Buku")
@@ -173,7 +176,7 @@ func menuAdmin() {
 }
 
 func menuPengguna() {
-	fmt.Println("*** Menu Pengguna ***")
+	fmt.Println("* Menu Pengguna *")
 	fmt.Println("Selamat Datang,", penggunaAktif.nama)
 	fmt.Println("1. Cek Buku Berdasarkan Keyword")
 	fmt.Println("2. Pinjam Buku")
@@ -225,6 +228,7 @@ func cekListBuku(A *arrBuku, n int) {
 		fmt.Println("Judul : ", A[i].judul)
 		fmt.Println("Kategori : ", A[i].kategori)
 		fmt.Println("Status Peminjaman: ", A[i].statusPinjam)
+		fmt.Println("Total Peminjam: ", A[i].totalPeminjam)
 		fmt.Println("")
 	}
 	fmt.Println("")
@@ -384,7 +388,9 @@ func kembaliBuku(A *arrBuku, n int, B *arrPeminjaman, o *int) {
 }
 
 func totalDendaUser(A arrPengguna, n int) {
-
+	for i := 0; i < n; i++ {
+		totalDenda += A[i].denda
+	}
 }
 
 func bukuFavorit(A arrBuku, n int) {
